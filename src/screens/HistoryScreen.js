@@ -6,7 +6,8 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useFontSettings } from '../contexts/FontContext';
 import { ArrowUp, ArrowDown } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_BASE_URL } from "@env";
+import {API_URL } from "@env";
+import axios from 'axios';
 
 // Você precisa definir sua URL base da AP; // Substitua pela sua URL
 
@@ -77,14 +78,13 @@ const HistoryScreen = ({ route }) => {
   const fetchHistory = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/hist/${await AsyncStorage.getItem("user")}`);
-      
-      if (!response.ok) {
+      const response = await axios.get(`${API_URL}/hist/${await AsyncStorage.getItem("user")}`);
+
+      if (response.status !== 200) {
         throw new Error('Erro ao buscar histórico');
       }
-      
-      const data = await response.json();
-      setHistory(data.history || []);
+      const data = await response.data;
+      setHistory(data || []);
     } catch (error) {
       console.error('Erro ao buscar histórico:', error);
       Alert.alert('Erro', 'Não foi possível carregar o histórico. Tente novamente.');

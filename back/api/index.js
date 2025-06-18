@@ -20,6 +20,7 @@ app.use(express.json()); // Parse do JSON
 // Import das rotas da aplicação
 import RotasBeneficio from "./routes/beneficio.js";
 import RotasUsuarios from "./routes/usuario.js";
+import histRouter from "./routes/histRouter.js"; 
 
 // Conteúdo público
 app.use(express.static("public"));
@@ -58,6 +59,7 @@ app.get("/api", (req, res) => {
 // Rotas da API
 app.use("/api/beneficio", RotasBeneficio);
 app.use("/api/usuario", RotasUsuarios);
+app.use("/api/hist", histRouter);
 
 // Listen
 app.listen(PORT, function () {

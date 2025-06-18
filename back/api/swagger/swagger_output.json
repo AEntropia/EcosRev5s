@@ -5,8 +5,8 @@
     "title": "Projeto EcosRev 🍀",
     "description": "➡️Documentação gerada automaticamente pelo módulo <a href='https://github.com/davibaltar/swagger-autogen' target='_blank'>swagger-autogen</a>."
   },
-  "host": "",
-  "basePath": "/",
+  "host": "localhost:3000",
+  "basePath": "",
   "schemes": [
     "http"
   ],
@@ -27,10 +27,6 @@
   "paths": {
     "/api": {
       "get": {
-        "tags": [
-          "Teste"
-        ],
-        "summary": "GET para teste sem autenticação",
         "description": "",
         "responses": {
           "200": {
@@ -542,6 +538,323 @@
             "apiKeyAuth": []
           }
         ]
+      }
+    },
+    "/api/usuario/{id}": {
+      "delete": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "DELETE recebendo um usuario pelo ID",
+        "description": "Função chamada para executar o DELETE de apenas um usuário pelo seu ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Não Encontrado"
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/api/usuario/me": {
+      "get": {
+        "tags": [
+          "Usuário"
+        ],
+        "summary": "GET do usuário logado",
+        "description": "Retorna os dados do usuário autenticado pelo token JWT",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Não Encontrado"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/api/usuario/senha": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "senhaAtual": {
+                  "example": "any"
+                },
+                "novaSenha": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Solicitação Inválida"
+          },
+          "403": {
+            "description": "Acesso Negado"
+          },
+          "404": {
+            "description": "Não Encontrado"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        }
+      }
+    },
+    "/api/usuario/forgot-password": {
+      "post": {
+        "tags": [
+          "Usuário"
+        ],
+        "summary": "POST para solicitação de recuperação de senha",
+        "description": "Função que envia uma senha temporária para o email do usuário usando Gmail",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Solicitação Inválida"
+          },
+          "404": {
+            "description": "Não Encontrado"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        }
+      }
+    },
+    "/api/usuario/reset-password": {
+      "post": {
+        "tags": [
+          "Usuário"
+        ],
+        "summary": "POST para alterar senha após recuperação",
+        "description": "Função para definir nova senha após login com senha temporária",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "novaSenha": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Solicitação Inválida"
+          },
+          "404": {
+            "description": "Não Encontrado"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/api/hist/pontos": {
+      "post": {
+        "tags": [
+          "Histórico"
+        ],
+        "summary": "POST para registrar pontos após leitura do QR code",
+        "description": "Registra pontos no histórico do usuário",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "any"
+                },
+                "idUser": {
+                  "example": "any"
+                },
+                "points": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Criado"
+          },
+          "400": {
+            "description": "Solicitação Inválida"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        }
+      }
+    },
+    "/api/hist/transacoes": {
+      "post": {
+        "tags": [
+          "Histórico"
+        ],
+        "summary": "POST para registrar uma transação de benefício",
+        "description": "Registra uma transação no histórico do usuário",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "idUser": {
+                  "example": "any"
+                },
+                "description": {
+                  "example": "any"
+                },
+                "points": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Criado"
+          },
+          "400": {
+            "description": "Solicitação Inválida"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        }
+      }
+    },
+    "/api/hist/{idUser}": {
+      "get": {
+        "tags": [
+          "Histórico"
+        ],
+        "summary": "GET histórico de pontos e transações de um usuário",
+        "description": "Retorna histórico de pontos e transações de um usuário, filtrado por data",
+        "parameters": [
+          {
+            "name": "idUser",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        }
+      }
+    },
+    "/api/hist/": {
+      "get": {
+        "tags": [
+          "Histórico"
+        ],
+        "summary": "GET histórico de todos os usuários",
+        "description": "Retorna o histórico de pontos e transações de todos os usuários, agrupado por idUser, filtrado por data",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        }
       }
     }
   },

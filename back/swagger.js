@@ -8,9 +8,9 @@ const doc = {
         title: "Projeto EcosRev 🍀",
         description: "➡️Documentação gerada automaticamente pelo módulo <a href='https://github.com/davibaltar/swagger-autogen' target='_blank'>swagger-autogen</a>."
     },
-    host: 'https://ecos-rev.vercel.app',// LINK DO VERCEL VAI AQUI
-    basePath: "/api",
-    schemes: ['https'], //NO VERCEL DARA ERRO, TROCAR POR HTTPS AMEM
+    host: 'localhost:3000',// LINK DO VERCEL VAI AQUI
+    basePath: "",
+    schemes: ['http'], //NO VERCEL DARA ERRO, TROCAR POR HTTPS AMEM
     consumes: ['application/json'],
     produces: ['application/json'],
     securityDefinitions: {

@@ -1,5 +1,5 @@
 //src\screens\QRCodeScannerScreen.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useTheme } from '../contexts/ThemeContext';
@@ -19,6 +19,7 @@ export default function QRCodeScanner() {
   const { fontSize, fontFamily } = useFontSettings();
   const [token, setToken] = useState(null);
   const navigation = useNavigation();
+  const scanningRef = useRef(false);
 
   useEffect(() => {
     AsyncStorage.getItem('token').then(setToken);
@@ -79,34 +80,23 @@ export default function QRCodeScanner() {
       { headers: { "access-token": token } }
     );
 
-    await fetch(`${API_BASE_URL}/hist/pontos`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        _id: await AsyncStorage.getItem('user'),
-        pontos: pontos,
-        hash: hash,
-      }),
+    await axios.post(`${API_URL}/hist/pontos`, {
+        idUser: await AsyncStorage.getItem('user'),
+        points: pontos,
+        id: hash
     })
       .then(response => {
-        if (!response.ok) {
-          throw new Error('Erro na requisição: ' + response.status);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Resposta:', data);
+        console.log('Resposta:', response.data);
       })
       .catch(error => {
         console.error('Erro:', error);
       });
   };
 
-
-
   const handleBarCodeScanned = async ({ data }) => {
+    if (scanningRef.current) return; // Bloqueia múltiplas leituras
+    scanningRef.current = true;
+
     try {
       const parsedData = JSON.parse(data);
       setScanned(true);
@@ -122,7 +112,13 @@ export default function QRCodeScanner() {
     }
   };
 
-
+  // Quando fechar o alerta, libera para novo scan
+  const handleCloseAlert = () => {
+    setAlertVisible(false);
+    setScanned(false);
+    scanningRef.current = false; // Libera para novo scan
+    navigation.navigate('Main', { screen: 'HomeTab' });
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -143,14 +139,11 @@ export default function QRCodeScanner() {
         visible={alertVisible}
         title="QR Code Escaneado"
         message={`Você recebeu ${scannedData.pontos} pontos!`}
-        onClose={() => {
-          setAlertVisible(false);
-          setScanned(false);
-          navigation.navigate('Main', { screen: 'HomeTab' });
-        }}
+        onClose={handleCloseAlert}
         onConfirm={() => {
           setAlertVisible(false);
           setScanned(false);
+          scanningRef.current = false;
         }}
       />
     </View>

@@ -9,7 +9,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { API_URL, API_BASE_URL } from "@env";
+import { API_URL} from "@env";
 
 
 const BenefitsScreen = () => {
@@ -103,29 +103,24 @@ const BenefitsScreen = () => {
   const confirmRedeem = async () => {
     console.log(selectedBenefit)
     // If it's just an informational alert (error or success), simply close it
-    await fetch(`${API_BASE_URL}/hist/transacoes`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        _id: await AsyncStorage.getItem('user'),
-        pontos: selectedBenefit.pontos,
-        description: selectedBenefit.nome
-      }),
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Erro na requisição: ' + response.status);
+    try {
+      const response = await axios.post(
+        `${API_URL}/hist/transacoes`,
+        {
+          idUser: await AsyncStorage.getItem('user'),
+          points: selectedBenefit.pontos,
+          description: selectedBenefit.nome
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Resposta:', data);
-      })
-      .catch(error => {
-        console.error('Erro:', error);
-      });
+      );
+      console.log('Resposta:', response.data);
+    } catch (error) {
+      console.error('Erro:', error);
+    }
     if (isError || (selectedBenefit && selectedBenefit.nome === "Resgate Concluído")) {
       setAlertVisible(false);
       return;
